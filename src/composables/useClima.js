@@ -7,36 +7,37 @@ export default function useClima() {
     const cargando = ref(false)
     const error = ref('')
 
-    const obtenerClima = async ({ciudad, pais}) => {
+    const obtenerClima = async({ ciudad, pais }) => {
         //importar el api key
-        const key = import.meta.env.VITE_API_KEY  
-        cargando.value = true  
+        const key =
+            import.meta.env.VITE_API_KEY
+        cargando.value = true
         clima.value = {}
         error.value = ''
-        //console.log(key)
-        try{    
-              //Obtener la lat, long
+            //console.log(key)
+        try {
+            //Obtener la lat, long
 
-              const url = `http://api.openweathermap.org/geo/1.0/direct?q=${ciudad},${pais}&limit=1&appid=${key}`
+            const url = `https://api.openweathermap.org/geo/1.0/direct?q=${ciudad},${pais}&limit=1&appid=${key}`
 
-              const {data} = await axios(url)
-              const {lat,lon} = data[0]
+            const { data } = await axios(url)
+            const { lat, lon } = data[0]
 
             // Obtener el clima
-             const urlClima = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${key}`
-             const {data: resultado} = await axios(urlClima)
-             clima.value = resultado
+            const urlClima = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${key}`
+            const { data: resultado } = await axios(urlClima)
+            clima.value = resultado
 
-        }catch {
+        } catch {
             error.value = 'Ciudad No Encontrada'
-            //console.log(error)
-        } finally{
+                //console.log(error)
+        } finally {
             cargando.value = false
         }
     }
 
     //Los computed no pueden pasar parametros?
-    const mostrarClima = computed( () => {
+    const mostrarClima = computed(() => {
         return Object.values(clima.value).length > 0
     })
 
